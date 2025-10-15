@@ -6,6 +6,9 @@
   - [x] 쉼표(`,`) 한 가지만 있을 때
   - [x] 콜론(`:`) 한 가지만 있을 때
   - [x] 쉼표와 콜론이 동시에 있을 때
+- [x] 구분자로 지정된 문자가 아닌 문자가 포함된 경우에는 `IllegalArgumentException`을 발생시킨다.
+  - 구분자로 지정된 문자와 숫자형 문자를 총칭하여 '허용된 문자들(Allowed Characters)'이라고 하자.
+  - 즉, 해당 요구 사항은 '입력된 문자열은 허용된 문자들로만 이루어져 있어야 함'과 같다.
 
 ## 미션 진행에 대한 전반적인 사고 흐름
 > [!NOTE]   
@@ -87,3 +90,20 @@ class ApplicationTest extends NsTest {
   - '계산한다(Calculator)'는 표현은 내부적으로 일련의 작업(이 경우에는 검증 -> 커스텀 구분자 확인 -> 구분자 기준 분리 -> 더하기)이 있음을 암시할 수 있다.
   - 다만, 검증 등의 작업을 별도의 객체로 분리하는 것도 좋겠다고 생각되는데 이는 추후에 필요성을 직접 느낄 때 진행하도록 한다.
   - [구현할 기능 목록](#구현할-기능-목록)의 시작도 `StringCalculator` 객체를 만드는 것으로 시작한다.
+
+### 구분자가 아닌 문자가 존재하는 경우 예외 처리
+항상 그렇듯, 먼저 테스트 코드를 작성했는데 의도대로 red로 테스트가 실패하지 않았다.
+
+<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/98e81a2f-7204-4d93-96cd-3d699693ec6c" />
+
+이유는 다음과 같다.
+- 구분자가 아닌 문자열이 존재하는 경우 split의 각 요소가 숫자형 문자열이 아닌 경우가 생긴다.
+  - 예. `"1,2.3:4,5"`의 경우 `String` 배열 `["1", "2.3", "4", "5"]`로 분리된다.
+- 스트림 연산에서 `String` -> `int`로 변환하는 과정에서 실패하게 되면 `NumberFormatException` 예외가 발생한다.
+  - `Integer.parseInt("1")`은 성공하지만, `Integer.parseInt("2.3")`은 실패한다.
+- `NumberFormatException`은 `IllegalArgumentException`의 자식이다.
+  - 따라서 `isInstanceOf(부모예외)`에 의해 `true`가 된다.
+
+다음과 같이 `isExactlyInstanceOf()`를 사용해서 의도대로 실패하게 할 수 있다.
+
+<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/9249895a-db13-4f13-8465-e99cff6461e1" />

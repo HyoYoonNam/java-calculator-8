@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class StringCalculatorTest {
 
@@ -53,5 +54,22 @@ public class StringCalculatorTest {
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3});
         assertThat(separated2).isEqualTo(new int[]{1, 2, 3, 4, 5});
+    }
+
+    @Test
+    @DisplayName("구분자가 아닌 문자열이 존재하면 예외를 발생시킨다")
+    void when_user_input_contains_non_delimiter_then_throw_IllegalArgEx() {
+        // given
+        String userInput = "1,2.3:4;5";
+        String userInput2 = "1,2a3,4a5";
+
+        // when and then
+        assertThatThrownBy(() -> {
+            StringCalculator.separate(userInput);
+        }).isExactlyInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> {
+            StringCalculator.separate(userInput2);
+        }).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 }
