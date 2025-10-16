@@ -33,6 +33,7 @@ public class StringCalculator {
         String splitRegex = "[" + String.join("", DELIMITERS) + "]";
         String[] split = userInput.split(splitRegex);
         return Stream.of(split)
+                .map(String::strip)
                 .mapToInt(Integer::parseInt)
                 .toArray();
     }
@@ -45,9 +46,10 @@ public class StringCalculator {
          * - '['와 ']' 사이에 있는 문자들로만
          * - 0번 이상 반복되는('*')
          * 경우에만 true를 리턴한다.
+         * "\\s"는 whitespace를 나타냄
          * 이때 1번 이상 반복을 의미하는 '+'가 아니라, 0번 이상 반복을 의미하는 '*'를 쓴 것은 공백 입력 허용을 나타냄
          */
-        String regex = "^[" + DECIMAL_REGEX_PATTERN + delimiterRegexPattern + "]+$";
+        String regex = "^[" + DECIMAL_REGEX_PATTERN + delimiterRegexPattern + "\\s" + "]+$";
         return userInput.matches(regex);
     }
 }

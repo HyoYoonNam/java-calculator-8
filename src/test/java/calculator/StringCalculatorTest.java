@@ -124,4 +124,17 @@ public class StringCalculatorTest {
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("구분자가 가장 뒤에 위치합니다. 구분자 뒤에는 숫자가 존재해야 합니다.");
     }
+
+    @Test
+    @DisplayName("숫자의 앞, 뒤, 숫자와 구분자 사이에 있는 공백은 허용한다")
+    void when_user_input_has_whitespace_then_strip() {
+        // given
+        String userInput = " 1, 2 ,3 , 4,   5 ";
+
+        // when
+        int[] separated = StringCalculator.separate(userInput);
+
+        // then
+        assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4, 5});
+    }
 }
