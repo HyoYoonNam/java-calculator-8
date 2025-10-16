@@ -12,7 +12,8 @@
 - 구분자로 지정된 문자라고 하더라도, 다음 경우에는 잘못된 값 입력으로 대응(예외 발생)해야 한다.
   - 이를 '허용된 구분자를 잘못 사용하는 경우'라고 하자.
   - [x] 구분자가 연속해서 2회 이상 반복되는 경우 (예. `"1,,2,3"`, `"1,:2,3"`)
-  - [ ] 구분자가 처음 등장하는 숫자보다 먼저 등장하는 경우 (예. `",1,2"`)
+  - [x] 구분자가 처음 등장하는 숫자보다 먼저 등장하는 경우 (예. `",1,2"`)
+    - 단순하게 '구분자가 사용자 입력의 가장 앞에 위치하는 경우'라고도 표현할 수 있다.
   - [ ] 구분자 다음에 숫자가 등장하지 않는 경우 (예. `"1,2,"`)
 
 ## 미션 진행에 대한 전반적인 사고 흐름
@@ -58,27 +59,27 @@
 ```java
 class ApplicationTest extends NsTest {
 
-    // 내가 추가하려는 테스트
-    @Test
-    @DisplayName("사용자가 입력한 문자열을 기본 구분자(`,`, `:`) 기준으로 분리할 수 있다")
-    void separate_user_input_by_basic_delimiter() {
-        String userInput = "1,2,3";
-        assertSimpleTest(() -> {
-            run(userInput);
-            // 단언이 어렵다.
-            assertThat(output()).isEqualTo("[1,2,3]");
-        });
-    }
+  // 내가 추가하려는 테스트
+  @Test
+  @DisplayName("사용자가 입력한 문자열을 기본 구분자(`,`, `:`) 기준으로 분리할 수 있다")
+  void separate_user_input_by_basic_delimiter() {
+    String userInput = "1,2,3";
+    assertSimpleTest(() -> {
+      run(userInput);
+      // 단언이 어렵다.
+      assertThat(output()).isEqualTo("[1,2,3]");
+    });
+  }
 
-    // 기본으로 제공된 테스트
-    @Test
-    void 커스텀_구분자_사용() {
-      assertSimpleTest(() -> {
-        run("//;\\n1");
-        assertThat(output()).contains("결과 : 1");
-      });
-    }
-    //...
+  // 기본으로 제공된 테스트
+  @Test
+  void 커스텀_구분자_사용() {
+    assertSimpleTest(() -> {
+      run("//;\\n1");
+      assertThat(output()).contains("결과 : 1");
+    });
+  }
+  //...
 }    
 ```
 - 기본으로 제공된 테스트는 `Application`에 대한 테스트 코드다. 즉, 단순히 문자열에서 숫자를 추출하여 더하는 계산기의 기능 뿐만 아니라 사용자로부터 입력해 달라는 메시지와, 그에 대한 결과 합을 출력해주는 콘솔 입/출력 기능까지 포함한다.
@@ -124,14 +125,14 @@ class ApplicationTest extends NsTest {
 ```java
 @Test
 void sample_test() {
-    String text = "Hello, World!";
-    String regex = "World";
+  String text = "Hello, World!";
+  String regex = "World";
 
-    Pattern pattern = Pattern.compile(regex);
-    Matcher matcher = pattern.matcher(text);
-    boolean found = matcher.find();
-    System.out.println(found); // true
-    System.out.println(text.matches(regex)); // false
+  Pattern pattern = Pattern.compile(regex);
+  Matcher matcher = pattern.matcher(text);
+  boolean found = matcher.find();
+  System.out.println(found); // true
+  System.out.println(text.matches(regex)); // false
 }
 ```
 
@@ -140,12 +141,12 @@ void sample_test() {
 ```java
 // 로직1
 if (!hasOnlyAllowedCharacters(userInput)) {
-    throw new IllegalArgumentException("허용되지 않은 구분자가 존재합니다.");
+        throw new IllegalArgumentException("허용되지 않은 구분자가 존재합니다.");
 }
 // 로직2
 String repeatedDelimiterRegex = "[" + String.join("", DELIMITERS) + "]{2,}";
 if (Pattern.compile(repeatedDelimiterRegex).matcher(userInput).find()) {
-    throw new IllegalArgumentException("구분자가 연속해서 2회 이상 반복되었습니다.");
+        throw new IllegalArgumentException("구분자가 연속해서 2회 이상 반복되었습니다.");
 }
 ```
 - 현재 `separate` 메서드에는 두 가지 예외 상황이 존재하고, 그 타입은 같다.
@@ -163,3 +164,43 @@ if (Pattern.compile(repeatedDelimiterRegex).matcher(userInput).find()) {
   - 이를 통해 `IllegalArgumentException` 예외가 발생했더라도, 메시지가 다르면 검증에 실패한다. (아래 사진 참고)
 
 <img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/d7fc838c-ae3d-45b4-8659-e3ef4adf23f3" />
+
+#### 2) 구분자가 사용자 입력의 가장 앞에 위치하는 경우, 예외의 위계
+앞서 구현한 상황에서 '구분자의 연속 2회 이상 반복'은 입력된 문자열의 어느 위치에서나 동일하게 문제가 된다. 즉, 문자열에서 정규표현식 패턴을 찾아주는 `Pattern`, `Matcher`를 사용하는 것이 적절하다.
+
+하지만 이번 상황은 검증해야 할 위치가 확실하다. '사용자 입력의 가장 앞'이다. 문자열 전체를 탐색하지 않고 문자열의 첫 인덱스만 확인해도 충분하다.
+
+따라서 다음과 같이 검증하도록 하자.
+
+```java
+// 검증 로직
+if (String.join("", DELIMITERS)
+        .contains(String.valueOf(userInput.charAt(0)))) {
+    throw new IllegalArgumentException("구분자가 가장 앞에 위치합니다. 구분자는 숫자 뒤에 위치해야 합니다.");
+}
+// 테스트 코드
+assertThatThrownBy(() -> {
+        StringCalculator.separate(userInput);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("구분자가 가장 앞에 위치합니다. 구분자는 숫자 뒤에 위치해야 합니다.");
+```
+
+그런데 이는 `",1,2,3"` 입력에 대해서는 테스트가 통과하지만, `",:1,2:3"` 입력에 대해서는 실패한다(아래 사진 참고).
+
+<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/1df8dbfd-673c-4f06-b60d-da1141139aa6" />
+
+예외 메시지를 보면 `IllegalArgumentException`이 발생하긴 했지만, 메시지가 달라서 테스트에 실패함을 알 수 있다. 
+
+우리의 기대("구분자가 가장 앞에...", 이하 '맨앞 예외')와 다른 메시지("구분자가 연속해서...", 이하 '반복 예외')가 예외에 들어 있다. 즉, 반복 예외와 맨앞 예외가 모두 발생할 수 있는 상황에서 반복 예외가 우선되었기 때문이다.
+
+두 예외의 위계를 따져 보자. `",:1,2,3"`에서 우선되어야 할 예외는 무엇일까? 근본적으로 어떤 규칙을 위배한 것일까?
+- 후보1: 반복 예외
+- 후보2: 맨앞 예외
+
+구분자가 맨 앞에 위치한 경우(반복 예외)라면 그 반복의 수가 1인지, 2 이상인지는 전혀 상관이 없다. `",1"`이어도 맨앞 예외가 발생되어야 하고, `",,1"`이어도 맨앞 예외가 발생해야 한다. 즉, 그냥 구분자가 맨앞에 위치했기 때문에 예외가 발생해야 되는 것이다(근본 원인).
+
+그런데 지금 separate()의 내부 로직상 반복 예외에 대한 처리가 맨앞 예외에 대한 처리보다 먼저 위치하기 때문에, 두 예외 원인이 공존하는 경우에는 반복 예외 처리에 의해 메시지가 "구분자가 연속해서..."인 반복 예외를 발생시키고 종료되는 것이다.
+
+결론적으로, 더 넓은 범위를 커버하는 맨앞 예외 처리 로직을 반복 예외 처리 로직보다 앞으로 가져오는 것으로 문제를 해결할 수 있다(아래 사진 참고).
+
+<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/5c141c36-9188-4954-9d8f-9c225054430f" />

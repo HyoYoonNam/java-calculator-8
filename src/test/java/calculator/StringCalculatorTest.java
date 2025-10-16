@@ -86,4 +86,23 @@ public class StringCalculatorTest {
         }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("구분자가 연속해서 2회 이상 반복되었습니다.");
     }
+
+    @Test
+    @DisplayName("구분자가 사용자 입력의 가장 앞에 위치하면 예외를 발생시킨다")
+    void when_delimiters_position_is_first_of_user_input_then_throw_IllegalArgEx() {
+        // given
+        String userInput = ",1,2:3";
+        String userInput2 = ",:1,2:3";
+
+        // when and then
+        assertThatThrownBy(() -> {
+            StringCalculator.separate(userInput);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("구분자가 가장 앞에 위치합니다. 구분자는 숫자 뒤에 위치해야 합니다.");
+
+        assertThatThrownBy(() -> {
+            StringCalculator.separate(userInput2);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("구분자가 가장 앞에 위치합니다. 구분자는 숫자 뒤에 위치해야 합니다.");
+    }
 }
