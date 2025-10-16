@@ -30,6 +30,11 @@ public class StringCalculator {
             throw new IllegalArgumentException("구분자가 연속해서 2회 이상 반복되었습니다.");
         }
 
+        String whitespaceBetweenNumbersRegex = "\\d[\\s]+\\d";
+        if (Pattern.compile(whitespaceBetweenNumbersRegex).matcher(userInput).find()) {
+            throw new IllegalArgumentException("숫자와 숫자 사이에는 공백이 존재할 수 없습니다.");
+        }
+
         String splitRegex = "[" + String.join("", DELIMITERS) + "]";
         String[] split = userInput.split(splitRegex);
         return Stream.of(split)

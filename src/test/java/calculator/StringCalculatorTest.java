@@ -137,4 +137,17 @@ public class StringCalculatorTest {
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4, 5});
     }
+
+    @Test
+    @DisplayName("숫자와 숫자 사이에 공백이 있으면 예외를 발생시킨다")
+    void when_user_input_has_whitespace_between_numbers_then_throw_IllegalArgEx() {
+        // given
+        String userInput = "1, 2 ,3 4";
+
+        // when and then
+        assertThatThrownBy(() -> {
+            StringCalculator.separate(userInput);
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("숫자와 숫자 사이에는 공백이 존재할 수 없습니다.");
+    }
 }
