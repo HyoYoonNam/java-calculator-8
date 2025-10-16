@@ -1,5 +1,6 @@
 package calculator;
 
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class StringCalculator {
@@ -13,11 +14,17 @@ public class StringCalculator {
             throw new IllegalArgumentException("허용되지 않은 구분자가 존재합니다.");
         }
 
+        // 정규표현식 "[,:]{2,}"는 '['와 ']' 사이에 있는 문자가 2회 이상 반복되는 패턴과 매칭된다.
+        String repeatedDelimiterRegex = "[" + String.join("", DELIMITERS) + "]{2,}";
+        if (Pattern.compile(repeatedDelimiterRegex).matcher(userInput).find()) {
+            throw new IllegalArgumentException("구분자가 연속해서 2회 이상 반복되었습니다.");
+        }
+
         String splitRegex = "[" + String.join("", DELIMITERS) + "]";
         String[] split = userInput.split(splitRegex);
         return Stream.of(split)
-                        .mapToInt(Integer::parseInt)
-                        .toArray();
+                .mapToInt(Integer::parseInt)
+                .toArray();
     }
 
     private static boolean hasOnlyAllowedCharacters(String userInput) {

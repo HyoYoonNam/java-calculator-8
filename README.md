@@ -9,6 +9,11 @@
 - [x] 구분자로 지정된 문자가 아닌 문자가 포함된 경우에는 `IllegalArgumentException`을 발생시킨다.
   - 구분자로 지정된 문자와 숫자형 문자를 총칭하여 '허용된 문자들(Allowed Characters)'이라고 하자.
   - 즉, 해당 요구 사항은 '입력된 문자열은 허용된 문자들로만 이루어져 있어야 함'과 같다.
+- 구분자로 지정된 문자라고 하더라도, 다음 경우에는 잘못된 값 입력으로 대응(예외 발생)해야 한다.
+  - 이를 '허용된 구분자를 잘못 사용하는 경우'라고 하자.
+  - [x] 구분자가 연속해서 2회 이상 반복되는 경우 (예. `"1,,2,3"`, `"1,:2,3"`)
+  - [ ] 구분자가 처음 등장하는 숫자보다 먼저 등장하는 경우 (예. `",1,2"`)
+  - [ ] 구분자 다음에 숫자가 등장하지 않는 경우 (예. `"1,2,"`)
 
 ## 미션 진행에 대한 전반적인 사고 흐름
 > [!NOTE]   
@@ -16,10 +21,10 @@
 
 ### 기능 요구사항 분석
 먼저, 주어진 기능 요구 사항을 분석하며 발생할 수 있는 여러 상황과 용어에 대한 나만의 정의
-(예를 들어 ‘잘못된 값 입력’에서 ‘잘못된’이란 어떤 사례로 봐야되는지, 또 복구 가능한 잘못됨과 예외를 발생시켜야 하는 잘못됨의 구분 등)를 했다(아래 사진 참고). 
+(예를 들어 ‘잘못된 값 입력’에서 ‘잘못된’이란 어떤 사례로 봐야되는지, 또 복구 가능한 잘못됨과 예외를 발생시켜야 하는 잘못됨의 구분 등)를 했다(아래 사진 참고).
 
 노트 1페이지 정도 분량이 나왔고, 1분 이내에 다음 상황이 떠오르지 않을 때까지 진행한 결과였다
-(작은 단위의 설계-구현 사이클 반복을 통한 잦은 피드백을 목표로 했기 때문에 초반부 설계에 너무 많은 시간을 들이지 않으려고 의도했다). 
+(작은 단위의 설계-구현 사이클 반복을 통한 잦은 피드백을 목표로 했기 때문에 초반부 설계에 너무 많은 시간을 들이지 않으려고 의도했다).
 
 이때 라이브러리 사용에 대한 명시가 있어서 주어진 `Console` API를 확인하는 과정도 거쳤다.
 
@@ -37,7 +42,7 @@
 그리고 `"1,2:3"`으로 두 개의 기본 구분자를 사용한 경우는 앞선 상황보다는 아니지만, 어느정도 기본적인 상황이라고 할 수 있다.
 하지만 커스텀 구분자를 사용하는 `"//;\n1;2;3"`이나 빈 문자열 `""` 입력 등은 기본적인 상황이라고 하기 어렵다. 따라서 내 계획에서는 보다 후순위로 미루는 것이 적절하다.
 
-상황에 따라서는 기본적인 상황보다 예외 상황에 대한 구현을 선행하는 것이 더 간단할 수 있겠으나, 
+상황에 따라서는 기본적인 상황보다 예외 상황에 대한 구현을 선행하는 것이 더 간단할 수 있겠으나,
 해당 문제의 경우 '잘못된 값'에 대한 정의가 명확하지 않기 때문에 내 스스로 정의하는 과정이 필요하다.
 따라서 예외 상황에 대한 구현을 선행하는 것은 간단하지 않겠다고 판단하여 뒤로 미루기로 한다.
 
@@ -107,3 +112,54 @@ class ApplicationTest extends NsTest {
 다음과 같이 `isExactlyInstanceOf()`를 사용해서 의도대로 실패하게 할 수 있다.
 
 <img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/9249895a-db13-4f13-8465-e99cff6461e1" />
+
+### 허용된 구분자를 잘못 사용하는 경우
+#### 1) 구분자가 연속 2회 이상 반복되는 경우
+- 정규 표현식 `[,:]{2,}`로 매칭할 수 있다.
+- 문제는 str.matches(regex)는 str 전체가 매칭되냐를 검증한다는 것인데, 단순히 '포함 여부'만 확인하면 되는 지금 상황에서는 과도하다.
+- 이를 해결하기 위해 'How to check string contains regex in java'로 구글링했고, `Pattern`과 `Matcher` 클래스를 발견했다.
+
+**코드: Pattern, Matcher 실습**
+
+```java
+@Test
+void sample_test() {
+    String text = "Hello, World!";
+    String regex = "World";
+
+    Pattern pattern = Pattern.compile(regex);
+    Matcher matcher = pattern.matcher(text);
+    boolean found = matcher.find();
+    System.out.println(found); // true
+    System.out.println(text.matches(regex)); // false
+}
+```
+
+**코드: `separate` 메서드에 존재하는 두 가지 예외 상황**
+
+```java
+// 로직1
+if (!hasOnlyAllowedCharacters(userInput)) {
+    throw new IllegalArgumentException("허용되지 않은 구분자가 존재합니다.");
+}
+// 로직2
+String repeatedDelimiterRegex = "[" + String.join("", DELIMITERS) + "]{2,}";
+if (Pattern.compile(repeatedDelimiterRegex).matcher(userInput).find()) {
+    throw new IllegalArgumentException("구분자가 연속해서 2회 이상 반복되었습니다.");
+}
+```
+- 현재 `separate` 메서드에는 두 가지 예외 상황이 존재하고, 그 타입은 같다.
+- 따라서 assertj의 `isExactlyInstanceOf()`로 예외 타입을 검증하더라도 두 상황 중 어떤 상황에 의한 것인지는 구분이 어렵다.
+  - 만약, 로직2에 의해 예외가 발생할 것으로 의도한 입력값이었지만 로직1에 의해 발생한다면?
+  - 그런데, `IllegalArgumentException` 예외가 발생했다는 사실에만 안도해서 로직을 잘 짰다고 착각하고 넘어가게 된다면?
+- 이를 해결하기 위해 예외를 다음 두 가지로 세분화 하는 것을 시도할 수 있다(하지만 그러지 않을 것이며 이유는 아래에서 설명).
+  - `IllegalArgumentNotAllowedException`
+  - `IllegalArgumentRepeatedException`
+- 일단 주어진 요구 사항에서 '_잘못된 값인 경우 IllegalArgumentException 예외를 발생시키라_'는 안내가 있으므로 이를 위반하는 별도의 예외를 정의하는 것이 적절하지 않다.
+- 또한 (만약 새로운 정의가 허용된다고 하더라도) 주어진 상황에서는 전체 예외 상황이 그다지 많지 않으므로 예외를 세분화 할 정도로 복잡하지 않을 것이다. 필요성을 느끼지 못한 시점부터 먼 미래를 대비하는 것은 오버 엔지니어링이 될 위험이 있다.
+- 따라서 `IllegalArgumentException` 예외만을 사용하되, 세부적인 원인에 대해서는 메시지에 담아서 전달하기로 판단한다.
+  - 즉, 예외 타입은 같지만 예외 메시지는 다르므로 이를 기준으로 각 상황을 구분할 수 있겠다.
+  - 관련해서 찾아보니 `assertThatThrownBy()`에서 `.hasMessageXxx()`를 체이닝해서 사용할 수 있다.
+  - 이를 통해 `IllegalArgumentException` 예외가 발생했더라도, 메시지가 다르면 검증에 실패한다. (아래 사진 참고)
+
+<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/d7fc838c-ae3d-45b4-8659-e3ef4adf23f3" />

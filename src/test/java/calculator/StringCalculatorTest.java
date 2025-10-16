@@ -72,4 +72,18 @@ public class StringCalculatorTest {
             StringCalculator.separate(userInput2);
         }).isExactlyInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("구분자가 연속해서 2회 이상 반복되면 예외를 발생시킨다")
+    void when_delimiters_repeated_then_throw_IllegalArgEx() {
+        // given
+        String userInput = "1,,2,3";
+        String userInput2 = "1,2:,:,3";
+
+        // when and then
+        assertThatThrownBy(() -> {
+            StringCalculator.separate(userInput);
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("구분자가 연속해서 2회 이상 반복되었습니다.");
+    }
 }
