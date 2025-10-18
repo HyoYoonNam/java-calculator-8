@@ -16,11 +16,7 @@ public class StringCalculator {
 
         delimitersPositionValidate(userInput);
 
-        // 정규표현식 "[,:]{2,}"는 '['와 ']' 사이에 있는 문자가 2회 이상 반복되는 패턴과 매칭된다.
-        String repeatedDelimiterRegex = "[" + String.join("", DELIMITERS) + "]{2,}";
-        if (Pattern.compile(repeatedDelimiterRegex).matcher(userInput).find()) {
-            throw new IllegalArgumentException("구분자가 연속해서 2회 이상 반복되었습니다.");
-        }
+        delimitersRepetitionValidate(userInput);
 
         String whitespaceBetweenNumbersRegex = "\\d[\\s]+\\d";
         if (Pattern.compile(whitespaceBetweenNumbersRegex).matcher(userInput).find()) {
@@ -33,6 +29,14 @@ public class StringCalculator {
                 .map(String::strip)
                 .mapToInt(Integer::parseInt)
                 .toArray();
+    }
+
+    private static void delimitersRepetitionValidate(String userInput) {
+        // 정규표현식 "[,:]{2,}"는 '['와 ']' 사이에 있는 문자가 2회 이상 반복되는 패턴과 매칭된다.
+        String repeatedDelimiterRegex = "[" + String.join("", DELIMITERS) + "]{2,}";
+        if (Pattern.compile(repeatedDelimiterRegex).matcher(userInput).find()) {
+            throw new IllegalArgumentException("구분자가 연속해서 2회 이상 반복되었습니다.");
+        }
     }
 
     private static void delimitersPositionValidate(String userInput) {
