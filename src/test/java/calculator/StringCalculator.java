@@ -18,10 +18,7 @@ public class StringCalculator {
 
         delimitersRepetitionValidate(userInput);
 
-        String whitespaceBetweenNumbersRegex = "\\d[\\s]+\\d";
-        if (Pattern.compile(whitespaceBetweenNumbersRegex).matcher(userInput).find()) {
-            throw new IllegalArgumentException("숫자와 숫자 사이에는 공백이 존재할 수 없습니다.");
-        }
+        whitespacePositionValidate(userInput);
 
         String splitRegex = "[" + String.join("", DELIMITERS) + "]";
         String[] split = userInput.split(splitRegex);
@@ -29,6 +26,13 @@ public class StringCalculator {
                 .map(String::strip)
                 .mapToInt(Integer::parseInt)
                 .toArray();
+    }
+
+    private static void whitespacePositionValidate(String userInput) {
+        String whitespaceBetweenNumbersRegex = "\\d[\\s]+\\d";
+        if (Pattern.compile(whitespaceBetweenNumbersRegex).matcher(userInput).find()) {
+            throw new IllegalArgumentException("숫자와 숫자 사이에는 공백이 존재할 수 없습니다.");
+        }
     }
 
     private static void delimitersRepetitionValidate(String userInput) {
