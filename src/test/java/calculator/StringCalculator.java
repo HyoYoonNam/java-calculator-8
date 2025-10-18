@@ -14,15 +14,7 @@ public class StringCalculator {
             throw new IllegalArgumentException("허용되지 않은 구분자가 존재합니다.");
         }
 
-        if (String.join("", DELIMITERS)
-                .contains(String.valueOf(userInput.charAt(0)))) {
-            throw new IllegalArgumentException("구분자가 가장 앞에 위치합니다. 구분자는 숫자 뒤에 위치해야 합니다.");
-        }
-
-        if (String.join("", DELIMITERS)
-                .contains(String.valueOf(userInput.charAt(userInput.length() - 1)))) {
-            throw new IllegalArgumentException("구분자가 가장 뒤에 위치합니다. 구분자 뒤에는 숫자가 존재해야 합니다.");
-        }
+        delimitersPositionValidate(userInput);
 
         // 정규표현식 "[,:]{2,}"는 '['와 ']' 사이에 있는 문자가 2회 이상 반복되는 패턴과 매칭된다.
         String repeatedDelimiterRegex = "[" + String.join("", DELIMITERS) + "]{2,}";
@@ -41,6 +33,16 @@ public class StringCalculator {
                 .map(String::strip)
                 .mapToInt(Integer::parseInt)
                 .toArray();
+    }
+
+    private static void delimitersPositionValidate(String userInput) {
+        // 문자열의 처음이나 끝에 구분자가 있는 패턴에 매칭되는 정규표현식
+        String delimiterIllegalPositionRegex = "^[" + String.join("", DELIMITERS) + "]"
+                + "|[" + String.join("", DELIMITERS) + "]$";
+
+        if (Pattern.compile(delimiterIllegalPositionRegex).matcher(userInput).find()) {
+            throw new IllegalArgumentException("구분자는 숫자와 숫자 사이에만 존재할 수 있습니다.");
+        }
     }
 
     private static boolean hasOnlyAllowedCharacters(String userInput) {
