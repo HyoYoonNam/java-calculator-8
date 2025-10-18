@@ -14,11 +14,11 @@ public class StringCalculator {
             throw new IllegalArgumentException("허용되지 않은 구분자가 존재합니다.");
         }
 
-        delimitersPositionValidate(userInput);
+        validateDelimitersPosition(userInput);
 
-        delimitersRepetitionValidate(userInput);
+        validateDelimitersRepetition(userInput);
 
-        whitespacePositionValidate(userInput);
+        validateWhitespacePosition(userInput);
 
         String splitRegex = "[" + String.join("", DELIMITERS) + "]";
         String[] split = userInput.split(splitRegex);
@@ -28,14 +28,14 @@ public class StringCalculator {
                 .toArray();
     }
 
-    private static void whitespacePositionValidate(String userInput) {
+    private static void validateWhitespacePosition(String userInput) {
         String whitespaceBetweenNumbersRegex = "\\d[\\s]+\\d";
         if (Pattern.compile(whitespaceBetweenNumbersRegex).matcher(userInput).find()) {
             throw new IllegalArgumentException("숫자와 숫자 사이에는 공백이 존재할 수 없습니다.");
         }
     }
 
-    private static void delimitersRepetitionValidate(String userInput) {
+    private static void validateDelimitersRepetition(String userInput) {
         // 정규표현식 "[,:]{2,}"는 '['와 ']' 사이에 있는 문자가 2회 이상 반복되는 패턴과 매칭된다.
         String repeatedDelimiterRegex = "[" + String.join("", DELIMITERS) + "]{2,}";
         if (Pattern.compile(repeatedDelimiterRegex).matcher(userInput).find()) {
@@ -43,7 +43,7 @@ public class StringCalculator {
         }
     }
 
-    private static void delimitersPositionValidate(String userInput) {
+    private static void validateDelimitersPosition(String userInput) {
         // 문자열의 처음이나 끝에 구분자가 있는 패턴에 매칭되는 정규표현식
         String delimiterIllegalPositionRegex = "^[" + String.join("", DELIMITERS) + "]"
                 + "|[" + String.join("", DELIMITERS) + "]$";
