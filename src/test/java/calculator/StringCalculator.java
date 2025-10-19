@@ -1,11 +1,14 @@
 package calculator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class StringCalculator {
 
-    private static final String[] DELIMITERS = new String[]{",", ":"};
+    private static final String[] BASIC_DELIMITERS = new String[]{",", ":"};
+    private static final List<String> DELIMITERS = new ArrayList<>(List.of(BASIC_DELIMITERS));
     private static final String DECIMAL_REGEX_PATTERN = "0-9";
 
     public static int[] separate(String userInput) {
