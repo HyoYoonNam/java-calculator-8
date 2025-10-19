@@ -2,6 +2,7 @@ package calculator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -12,6 +13,15 @@ public class StringCalculator {
     private static final String DECIMAL_REGEX_PATTERN = "0-9";
 
     public static int[] separate(String userInput) {
+        String customDelimiterDefinitionRegex = "^//(.)\\\\n";
+        Matcher matcher = Pattern.compile(customDelimiterDefinitionRegex).matcher(userInput);
+        if (matcher.find()) {
+            // matcher().group(groupNumber)에서 0은 매칭된 전체, 1부터 n은 캡쳐된 n번째 그룹을 의미한다.
+            DELIMITERS.add(matcher.group(1)); // 커스텀 구분자를 구분자 리스트에 추가
+            // 커스텀 구분자 정의부를 제거하고, 순수한 숫자와 구분자 입력부만 남김
+            userInput = userInput.replace(matcher.group(0), "");
+        }
+
         validateUserInput(userInput);
 
         String splitRegex = "[" + String.join("", DELIMITERS) + "]";

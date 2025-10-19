@@ -132,4 +132,17 @@ public class StringCalculatorTest {
         }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("숫자와 숫자 사이에는 공백이 존재할 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("커스텀 구분자를 추가해도 기본 구분자는 여전히 사용 가능하다")
+    void separate_user_input_by_basic_delimiter_and_also_custom_delimiter() {
+        // given
+        String userInput = "//;\\n1; 2, 3: 4";
+
+        // when
+        int[] separated = StringCalculator.separate(userInput);
+
+        // then
+        assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4});
+    }
 }
