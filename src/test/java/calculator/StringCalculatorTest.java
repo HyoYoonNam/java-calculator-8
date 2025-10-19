@@ -184,4 +184,18 @@ public class StringCalculatorTest {
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자의 길이는 반드시 1이어야 합니다.");
     }
+
+
+    @Test
+    @DisplayName("커스텀 구분자로 기본 구분자(,와 :)를 명시한 경우, 사용자의 실수라고 판단하여 보정하고 정상 진행한다")
+    void when_custom_delimiter_is_basic_delimiter_then_separates_correctly() {
+        // given
+        String userInput = "//:\\n1: 2, 3: 4";
+
+        // when
+        int[] separated = StringCalculator.separate(userInput);
+
+        // then
+        assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4});
+    }
 }
