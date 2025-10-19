@@ -47,7 +47,9 @@ public class StringCalculator {
             throw new IllegalArgumentException("커스텀 구분자에는 공백을 지정할 수 없습니다.");
         }
 
-        DELIMITERS.add(delimiter); // 커스텀 구분자를 구분자 리스트에 추가
+        if (!DELIMITERS.contains(delimiter)) {
+            DELIMITERS.add(delimiter); // 커스텀 구분자를 구분자 리스트에 추가
+        }
         return userInput.replace(matcher.group(0), "");
     }
 
