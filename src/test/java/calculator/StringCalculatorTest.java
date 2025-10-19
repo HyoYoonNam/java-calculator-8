@@ -145,4 +145,17 @@ public class StringCalculatorTest {
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4});
     }
+
+    @Test
+    @DisplayName("커스텀 구분자에 숫자를 지정하면 예외를 발생시킨다")
+    void when_custom_delimiter_is_number_then_throw_IllegalArgEx() {
+        // given
+        String userInput = "//1\\n11 2, 3"; // 커스텀 구분자에 숫자를 지정한 것으로 인한 예외가 먼저 발생
+
+        // when and then
+        assertThatThrownBy(() -> {
+            StringCalculator.separate(userInput);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
+    }
 }

@@ -13,14 +13,7 @@ public class StringCalculator {
     private static final String DECIMAL_REGEX_PATTERN = "0-9";
 
     public static int[] separate(String userInput) {
-        String customDelimiterDefinitionRegex = "^//(.)\\\\n";
-        Matcher matcher = Pattern.compile(customDelimiterDefinitionRegex).matcher(userInput);
-        if (matcher.find()) {
-            // matcher().group(groupNumber)에서 0은 매칭된 전체, 1부터 n은 캡쳐된 n번째 그룹을 의미한다.
-            DELIMITERS.add(matcher.group(1)); // 커스텀 구분자를 구분자 리스트에 추가
-            // 커스텀 구분자 정의부를 제거하고, 순수한 숫자와 구분자 입력부만 남김
-            userInput = userInput.replace(matcher.group(0), "");
-        }
+        userInput = validateCustomDelimiter(userInput);
 
         validateUserInput(userInput);
 
@@ -30,6 +23,27 @@ public class StringCalculator {
                 .map(String::strip)
                 .mapToInt(Integer::parseInt)
                 .toArray();
+    }
+
+    private static String validateCustomDelimiter(String userInput) {
+        String customDelimiterDefinitionRegex = "^//(.)\\\\n";
+        Matcher matcher = Pattern.compile(customDelimiterDefinitionRegex).matcher(userInput);
+        if (!matcher.find()) {
+            return userInput;
+        }
+
+        String delimiter = matcher.group(1);
+        if (isNumber(delimiter)) {
+            throw new IllegalArgumentException("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
+        }
+
+        DELIMITERS.add(delimiter); // 커스텀 구분자를 구분자 리스트에 추가
+        return userInput.replace(matcher.group(0), "");
+    }
+
+    private static boolean isNumber(String delimiter) {
+        String numbersRegex = "[0-9]";
+        return Pattern.compile(numbersRegex).matcher(delimiter).matches();
     }
 
     private static void validateUserInput(String userInput) {
