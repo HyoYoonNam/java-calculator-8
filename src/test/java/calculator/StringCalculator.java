@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static java.lang.Character.*;
+
 public class StringCalculator {
 
     private static final String[] BASIC_DELIMITERS = new String[]{",", ":"};
@@ -39,6 +41,10 @@ public class StringCalculator {
 
         if (isNumber(delimiter)) {
             throw new IllegalArgumentException("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
+        }
+
+        if (isWhitespace(delimiter.charAt(0))) {
+            throw new IllegalArgumentException("커스텀 구분자에는 공백을 지정할 수 없습니다.");
         }
 
         DELIMITERS.add(delimiter); // 커스텀 구분자를 구분자 리스트에 추가
