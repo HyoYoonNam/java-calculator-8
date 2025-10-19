@@ -10,9 +10,7 @@ public class StringCalculator {
 
     public static int[] separate(String userInput) {
         // TODO : '잘못된 입력'에 대한 경우가 더 많아질 것으로 예상되는데, 그때는 별도로 validate() 메서드나 객체를 만들면 좋겠음
-        if (!hasOnlyAllowedCharacters(userInput)) {
-            throw new IllegalArgumentException("허용되지 않은 구분자가 존재합니다.");
-        }
+        validateAllowedCharacters(userInput);
 
         validateDelimitersPosition(userInput);
 
@@ -53,18 +51,15 @@ public class StringCalculator {
         }
     }
 
-    private static boolean hasOnlyAllowedCharacters(String userInput) {
+    private static void validateAllowedCharacters(String userInput) {
         String delimiterRegexPattern = String.join("", DELIMITERS);
-        /* regex는 "^[0-9,:]+$" 꼴이 된다.
-         * 이를 str.matches(regex)로 검증하면,
-         * - 처음부터('^') 끝까지('$')
-         * - '['와 ']' 사이에 있는 문자들로만
-         * - 0번 이상 반복되는('*')
-         * 경우에만 true를 리턴한다.
-         * "\\s"는 whitespace를 나타냄
-         * 이때 1번 이상 반복을 의미하는 '+'가 아니라, 0번 이상 반복을 의미하는 '*'를 쓴 것은 공백 입력 허용을 나타냄
+        /*
+         * [^0-9,:\\s] 정규표현식은 '[^'와 ']' 사이에 있는 문자들을 제외한 모든 패턴에 매칭된다.
+         * whitespace(\\s)는 일단 존재 자체를 허용하고, 올바른 위치에 대한 검증은 validateWhitespacePosition 메서드에서 한다.
          */
-        String regex = "^[" + DECIMAL_REGEX_PATTERN + delimiterRegexPattern + "\\s" + "]+$";
-        return userInput.matches(regex);
+        String disallowedCharactersRegex = "[^" + DECIMAL_REGEX_PATTERN + delimiterRegexPattern + "\\s]";
+        if (Pattern.compile(disallowedCharactersRegex).matcher(userInput).find()) {
+            throw new IllegalArgumentException("허용되지 않은 구분자가 존재합니다.");
+        }
     }
 }

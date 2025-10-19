@@ -296,3 +296,41 @@ java.lang.NumberFormatException: For input string: " 1"
 이에 따라 에러 메시지를 하나로 통일하고, 정규표현식을 사용하여 `if` 문도 하나만 사용할 수 있다.
 
 또한 '위치 검증'이라는 기능을 '분리'라는 기능을 수행하는 `separate` 메서드 내부에 두지 않고, 별도의 `delimitersPositionValidate` 메서드로 분리한다.
+
+#### 검증에 대한 메서드명을 validateXxx로 통일하기, hasOnlyAllowedCharacters 메서드 로직 개선하기
+아래 세 가지 메서드에 대해서는 네이밍을 통일했다.
+- `validateDelimitersPosition`
+- `validateDelimitersRepetition`
+- `validateWhitespacePosition`
+
+이제 `hasOnlyAllowedCharacters` 메서드 또한 네이밍을 통일시키고, 내부 로직 또한 변경할 점이 보여서 개선하려고 한다.
+
+**(변경 전) 소스 코드**
+
+```java
+private static boolean hasOnlyAllowedCharacters(String userInput) {
+  String delimiterRegexPattern = String.join("", DELIMITERS);
+  /* regex는 "^[0-9,:]+$" 꼴이 된다.
+   * 이를 str.matches(regex)로 검증하면,
+   * - 처음부터('^') 끝까지('$')
+   * - '['와 ']' 사이에 있는 문자들로만
+   * - 0번 이상 반복되는('*')
+   * 경우에만 true를 리턴한다.
+   * "\\s"는 whitespace를 나타냄
+   * 이때 1번 이상 반복을 의미하는 '+'가 아니라, 0번 이상 반복을 의미하는 '*'를 쓴 것은 공백 입력 허용을 나타냄
+   */
+  String regex = "^[" + DECIMAL_REGEX_PATTERN + delimiterRegexPattern + "\\s" + "]+$";
+  return userInput.matches(regex);
+}
+```
+위 코드는 다음 문제점들을 가진다.
+- 검증 메서드의 이름이 `hasXxx` 꼴로, 다른 메서드들과 통일되지 않는다.
+- 내부에서 예외를 발생시키는 다른 메서드들과 달리, `boolean`을 리턴하여 이를 호출한 `separate` 메서드에서 예외를 발생시켜야 된다.
+- `^[]+$` 정규표현식과 `str.matches(regex)` 메서드를 사용해 '문자열 전체가 정규표현식 패턴과 일치하는지'를 검증하고 있다.
+  - 우리는 '허용되지 않은 문자가 포함되어 있는지' 정도만 파악하면 충분한데, 다소 과해 보인다.
+
+따라서 다음과 같이 변경한다.
+- 메서드명을 `validateAllowedCharacters`로 변경하여 통일.
+- 리턴 타입을 `void`로 바꾸고, 검증을 통과하지 못하면 내부에서 예외를 발생. 즉, `separate` 메서드는 단순히 해당 메서드를 호출하기만 하면 됨.
+- 정규표현식을 `[^0-9,:\\s]` 꼴로 바꾸고, `Pattern`과 `Matcher`를 사용하여 '허용된 문자 외 다른 것이 있는지'를 찾을 수 있도록 함.
+  - 또한 문자열 전체를 확인하는 것이 아니라, 포함 여부만을 확인할 수 있도록 함.
