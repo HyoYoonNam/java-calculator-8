@@ -39,7 +39,7 @@ public class StringCalculator {
             throw new IllegalArgumentException("커스텀 구분자의 길이는 반드시 1이어야 합니다.");
         }
 
-        if (isNumber(delimiter)) {
+        if (isNumber(delimiter.charAt(0))) {
             throw new IllegalArgumentException("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
         }
 
@@ -51,9 +51,9 @@ public class StringCalculator {
         return userInput.replace(matcher.group(0), "");
     }
 
-    private static boolean isNumber(String delimiter) {
-        String numbersRegex = "[0-9]";
-        return Pattern.compile(numbersRegex).matcher(delimiter).matches();
+    // 테스트 메서드에서의 단어(number)와 맞추기 위해 Character.isDigit()을 래핑
+    private static boolean isNumber(char ch) {
+        return isDigit(ch);
     }
 
     private static void validateUserInput(String userInput) {
