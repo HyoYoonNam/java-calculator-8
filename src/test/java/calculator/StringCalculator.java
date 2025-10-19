@@ -26,13 +26,17 @@ public class StringCalculator {
     }
 
     private static String validateCustomDelimiter(String userInput) {
-        String customDelimiterDefinitionRegex = "^//(.)\\\\n";
+        String customDelimiterDefinitionRegex = "^//(.*)\\\\n";
         Matcher matcher = Pattern.compile(customDelimiterDefinitionRegex).matcher(userInput);
         if (!matcher.find()) {
             return userInput;
         }
 
         String delimiter = matcher.group(1);
+        if (delimiter.length() != 1) {
+            throw new IllegalArgumentException("커스텀 구분자의 길이는 반드시 1이어야 합니다.");
+        }
+
         if (isNumber(delimiter)) {
             throw new IllegalArgumentException("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
         }

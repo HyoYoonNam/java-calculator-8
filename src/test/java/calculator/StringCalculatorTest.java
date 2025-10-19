@@ -158,4 +158,17 @@ public class StringCalculatorTest {
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("커스텀 구분자의 길이가 1이 아니라면 예외를 발생시킨다")
+    void when_length_of_custom_delimiter_is_not_1_then_throw_IllegalArgEx() {
+        // given
+        String userInput = "//,,\\n1, 2,, 3, 4";
+
+        // when and then
+        assertThatThrownBy(() -> {
+            StringCalculator.separate(userInput);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("커스텀 구분자의 길이는 반드시 1이어야 합니다.");
+    }
 }
