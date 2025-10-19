@@ -342,5 +342,3 @@ private static boolean hasOnlyAllowedCharacters(String userInput) {
 - 리턴 타입을 `void`로 바꾸고, 검증을 통과하지 못하면 내부에서 예외를 발생. 즉, `separate` 메서드는 단순히 해당 메서드를 호출하기만 하면 됨.
 - 정규표현식을 `[^0-9,:\\s]` 꼴로 바꾸고, `Pattern`과 `Matcher`를 사용하여 '허용된 문자 외 다른 것이 있는지'를 찾을 수 있도록 함.
   - 또한 문자열 전체를 확인하는 것이 아니라, 포함 여부만을 확인할 수 있도록 함.
-
-### 커스텀 구분자 기능 추가
