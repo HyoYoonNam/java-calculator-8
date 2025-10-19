@@ -9,14 +9,7 @@ public class StringCalculator {
     private static final String DECIMAL_REGEX_PATTERN = "0-9";
 
     public static int[] separate(String userInput) {
-        // TODO : '잘못된 입력'에 대한 경우가 더 많아질 것으로 예상되는데, 그때는 별도로 validate() 메서드나 객체를 만들면 좋겠음
-        validateAllowedCharacters(userInput);
-
-        validateDelimitersPosition(userInput);
-
-        validateDelimitersRepetition(userInput);
-
-        validateWhitespacePosition(userInput);
+        validateUserInput(userInput);
 
         String splitRegex = "[" + String.join("", DELIMITERS) + "]";
         String[] split = userInput.split(splitRegex);
@@ -24,6 +17,13 @@ public class StringCalculator {
                 .map(String::strip)
                 .mapToInt(Integer::parseInt)
                 .toArray();
+    }
+
+    private static void validateUserInput(String userInput) {
+        validateAllowedCharacters(userInput);
+        validateDelimitersPosition(userInput);
+        validateDelimitersRepetition(userInput);
+        validateWhitespacePosition(userInput);
     }
 
     private static void validateWhitespacePosition(String userInput) {
