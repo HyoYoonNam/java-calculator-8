@@ -10,8 +10,8 @@ import static java.lang.Character.*;
 
 public class StringCalculator {
 
-    private static final String[] BASIC_DELIMITERS = new String[]{",", ":"};
-    private static final List<String> DELIMITERS = new ArrayList<>(List.of(BASIC_DELIMITERS));
+    private static final List<String> BASIC_DELIMITERS = new ArrayList<>(List.of(",", ":"));
+    private static final List<String> DELIMITERS = new ArrayList<>(BASIC_DELIMITERS);
     private static final String DECIMAL_REGEX_PATTERN = "0-9";
 
     public static int[] separate(String userInput) {
