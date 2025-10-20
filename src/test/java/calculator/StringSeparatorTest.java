@@ -97,12 +97,12 @@ public class StringSeparatorTest {
         // when and then
         assertThatThrownBy(() -> {
             StringSeparator.separate(userInput);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("구분자는 숫자와 숫자 사이에만 존재할 수 있습니다.");
 
         assertThatThrownBy(() -> {
             StringSeparator.separate(userInput2);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("구분자는 숫자와 숫자 사이에만 존재할 수 있습니다.");
     }
 
@@ -154,7 +154,7 @@ public class StringSeparatorTest {
         // when and then
         assertThatThrownBy(() -> {
             StringSeparator.separate(userInput);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
     }
 
@@ -167,7 +167,7 @@ public class StringSeparatorTest {
         // when and then
         assertThatThrownBy(() -> {
             StringSeparator.separate(userInput);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자에는 공백을 지정할 수 없습니다.");
     }
 
@@ -180,7 +180,7 @@ public class StringSeparatorTest {
         // when and then
         assertThatThrownBy(() -> {
             StringSeparator.separate(userInput);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자의 길이는 반드시 1이어야 합니다.");
     }
 
