@@ -11,7 +11,7 @@ import static java.lang.Character.isWhitespace;
 
 public class StringSeparator {
 
-    private static final List<String> BASIC_DELIMITERS = new ArrayList<>(List.of(",", ":"));
+    private static final List<String> BASIC_DELIMITERS = List.of(",", ":");
     private static final List<String> DELIMITERS = new ArrayList<>(BASIC_DELIMITERS);
     private static final String DECIMAL_REGEX_PATTERN = "0-9";
 
