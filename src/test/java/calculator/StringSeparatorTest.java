@@ -228,4 +228,17 @@ public class StringSeparatorTest {
         }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자에는 점\\(.\\)을 지정할 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("양의 실수가 포함된 문자열을 구분할 수 있다")
+    void separate_user_input_with_real_numbers() {
+        // given
+        String userInput = "1.2,3";
+
+        // when
+        double[] separated = StringSeparator.separate(userInput);
+
+        // then
+        assertThat(separated).isEqualTo(new double[]{1.2, 3});
+    }
 }
