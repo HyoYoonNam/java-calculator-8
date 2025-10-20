@@ -346,3 +346,21 @@ private static boolean hasOnlyAllowedCharacters(String userInput) {
 - 리턴 타입을 `void`로 바꾸고, 검증을 통과하지 못하면 내부에서 예외를 발생. 즉, `separate` 메서드는 단순히 해당 메서드를 호출하기만 하면 됨.
 - 정규표현식을 `[^0-9,:\\s]` 꼴로 바꾸고, `Pattern`과 `Matcher`를 사용하여 '허용된 문자 외 다른 것이 있는지'를 찾을 수 있도록 함.
   - 또한 문자열 전체를 확인하는 것이 아니라, 포함 여부만을 확인할 수 있도록 함.
+
+### 유저 접점에 대한 고민
+아래 사진에 대해 요약하면 다음과 같다.
+- `Application`은 유저 접점이다.
+  - 프로그램이 유저에게 제공할 기능은 계산(`calculate`) 기능이다.
+  - 그렇다면 유저는 "내가 입력한 문자열을 검증하고, int 배열로 분리하고, 배열의 각 요소를 더해서 그 합을 출력해 줘"라고 요청해야 될까?
+  - 그렇지 않다. "내가 입력한 문자열의 합을 계산해 줘"라고 선언적으로만 요청하는 것이 더 적절해 보인다. 세부 구현은 개발자의 몫이다.
+  - 즉, 유저는 `StringCalculator`의 `calculate` 메서드만 알면 된다(`public`).
+- 여기서 크게 두 가지 문제가 생긴다.
+  1. 현재, 유저가 알 필요가 없는 `separate` 메서드까지 외부에 노출되어 있다(`public`).
+     - 그런데 이를 `private`로 변경하면, 작성했던 테스트 메서드들의 실행이 어려워진다.
+  2. 유저는 `calculate`에게 문자열(`String`)을 전달해야 되는데, 현재 파라미터는 `int[]`이다.
+- 위 문제에 대해 다음과 같이 해결할 수 있겠다.
+  1. (임시 명칭) `StringSeparator` 클래스를 별도로 만들어서 여기에 `separate` 메서드를 둔다.
+     - 그리고 `StringCalculator`만 해당 클래스를 알게 하면 유저에 공개되는 메서드 문제와, 테스트 메서드 문제가 모두 해결된다.
+  2. `calculate` 메서드의 파라미터를 `String`으로 변경하고, 합 계산에 필요한 `int[]` 값은 내부에서 `separate`를 호출해 얻도록 하자.
+
+![separate-메서드와-StringCalculator-객체](https://gist.github.com/user-attachments/assets/b6d9fc6f-fa2d-4a9f-9cfd-461c1d8de956)
