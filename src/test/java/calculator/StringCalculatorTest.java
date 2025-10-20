@@ -57,7 +57,7 @@ public class StringCalculatorTest {
         // when and then
         assertThatThrownBy(() -> {
             StringSeparator.separate(userInput);
-        }).isInstanceOf(IllegalArgumentException.class)
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
     }
 }
