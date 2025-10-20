@@ -14,7 +14,9 @@ public class StringCalculator {
     private static final List<String> DELIMITERS = new ArrayList<>(BASIC_DELIMITERS);
     private static final String DECIMAL_REGEX_PATTERN = "0-9";
 
-    public static int calculate(int[] separated) {
+    public static int calculate(String userInput) {
+        int[] separated = separate(userInput);
+
         int sum = 0;
         for (int number : separated) {
             sum += number;
