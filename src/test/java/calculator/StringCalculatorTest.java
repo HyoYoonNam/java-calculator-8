@@ -17,8 +17,8 @@ public class StringCalculatorTest {
         String userInput2 = "1,2,3,4,5";
 
         // when
-        int[] separated = StringCalculator.separate(userInput);
-        int[] separated2 = StringCalculator.separate(userInput2);
+        int[] separated = StringSeparator.separate(userInput);
+        int[] separated2 = StringSeparator.separate(userInput2);
 
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3});
@@ -33,8 +33,8 @@ public class StringCalculatorTest {
         String userInput2 = "1:2:3:4:5";
 
         // when
-        int[] separated = StringCalculator.separate(userInput);
-        int[] separated2 = StringCalculator.separate(userInput2);
+        int[] separated = StringSeparator.separate(userInput);
+        int[] separated2 = StringSeparator.separate(userInput2);
 
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3});
@@ -49,8 +49,8 @@ public class StringCalculatorTest {
         String userInput2 = "1:2,3,4:5";
 
         // when
-        int[] separated = StringCalculator.separate(userInput);
-        int[] separated2 = StringCalculator.separate(userInput2);
+        int[] separated = StringSeparator.separate(userInput);
+        int[] separated2 = StringSeparator.separate(userInput2);
 
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3});
@@ -66,11 +66,11 @@ public class StringCalculatorTest {
 
         // when and then
         assertThatThrownBy(() -> {
-            StringCalculator.separate(userInput);
+            StringSeparator.separate(userInput);
         }).isExactlyInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> {
-            StringCalculator.separate(userInput2);
+            StringSeparator.separate(userInput2);
         }).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
@@ -83,7 +83,7 @@ public class StringCalculatorTest {
 
         // when and then
         assertThatThrownBy(() -> {
-            StringCalculator.separate(userInput);
+            StringSeparator.separate(userInput);
         }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("구분자가 연속해서 2회 이상 반복되었습니다.");
     }
@@ -97,12 +97,12 @@ public class StringCalculatorTest {
 
         // when and then
         assertThatThrownBy(() -> {
-            StringCalculator.separate(userInput);
+            StringSeparator.separate(userInput);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("구분자는 숫자와 숫자 사이에만 존재할 수 있습니다.");
 
         assertThatThrownBy(() -> {
-            StringCalculator.separate(userInput2);
+            StringSeparator.separate(userInput2);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("구분자는 숫자와 숫자 사이에만 존재할 수 있습니다.");
     }
@@ -114,7 +114,7 @@ public class StringCalculatorTest {
         String userInput = " 1, 2 ,3 , 4,   5 ";
 
         // when
-        int[] separated = StringCalculator.separate(userInput);
+        int[] separated = StringSeparator.separate(userInput);
 
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4, 5});
@@ -128,7 +128,7 @@ public class StringCalculatorTest {
 
         // when and then
         assertThatThrownBy(() -> {
-            StringCalculator.separate(userInput);
+            StringSeparator.separate(userInput);
         }).isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("숫자와 숫자 사이에는 공백이 존재할 수 없습니다.");
     }
@@ -140,7 +140,7 @@ public class StringCalculatorTest {
         String userInput = "//;\\n1; 2, 3: 4";
 
         // when
-        int[] separated = StringCalculator.separate(userInput);
+        int[] separated = StringSeparator.separate(userInput);
 
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4});
@@ -154,7 +154,7 @@ public class StringCalculatorTest {
 
         // when and then
         assertThatThrownBy(() -> {
-            StringCalculator.separate(userInput);
+            StringSeparator.separate(userInput);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
     }
@@ -167,7 +167,7 @@ public class StringCalculatorTest {
 
         // when and then
         assertThatThrownBy(() -> {
-            StringCalculator.separate(userInput);
+            StringSeparator.separate(userInput);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자에는 공백을 지정할 수 없습니다.");
     }
@@ -180,7 +180,7 @@ public class StringCalculatorTest {
 
         // when and then
         assertThatThrownBy(() -> {
-            StringCalculator.separate(userInput);
+            StringSeparator.separate(userInput);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageMatching("커스텀 구분자의 길이는 반드시 1이어야 합니다.");
     }
@@ -193,7 +193,7 @@ public class StringCalculatorTest {
         String userInput = "//:\\n1: 2, 3: 4";
 
         // when
-        int[] separated = StringCalculator.separate(userInput);
+        int[] separated = StringSeparator.separate(userInput);
 
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4});
@@ -207,8 +207,8 @@ public class StringCalculatorTest {
         String userInput2 = "//;\\n"; // 커스텀 문자열 정의만 하고, 실제 데이터 부분은 입력하지 않은 경우
 
         // when
-        int[] separated = StringCalculator.separate(userInput);
-        int[] separated2 = StringCalculator.separate(userInput2);
+        int[] separated = StringSeparator.separate(userInput);
+        int[] separated2 = StringSeparator.separate(userInput2);
 
         // then
         assertThat(separated).isEqualTo(new int[]{});
