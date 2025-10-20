@@ -24,7 +24,7 @@ public class StringSeparator {
             return new int[]{};
         }
 
-        Validator.validateUserInput(userInput);
+        InputValidator.validateUserInput(userInput);
 
         String splitRegex = "[" + String.join("", DELIMITERS) + "]";
         String[] split = userInput.split(splitRegex);
@@ -44,7 +44,7 @@ public class StringSeparator {
 
             String delimiter = matcher.group(1);
 
-            Validator.validateCustomDelimiter(delimiter);
+            InputValidator.validateCustomDelimiter(delimiter);
 
             if (!DELIMITERS.contains(delimiter)) {
                 DELIMITERS.add(delimiter); // 커스텀 구분자를 구분자 리스트에 추가
@@ -53,7 +53,7 @@ public class StringSeparator {
         }
     }
 
-    private static class Validator {
+    private static class InputValidator {
         private static void validateCustomDelimiter(String delimiter) {
             if (delimiter.length() != 1) {
                 throw new IllegalArgumentException("커스텀 구분자의 길이는 반드시 1이어야 합니다.");
