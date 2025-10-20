@@ -55,7 +55,7 @@
 
 이때 라이브러리 사용에 대한 명시가 있어서 주어진 `Console` API를 확인하는 과정도 거쳤다.
 
-![기능-요구사항-분석-초기-버전](https://gist.github.com/user-attachments/assets/9feed1d3-fd6d-4b8e-8721-09d6adf637ca)
+<img width="2255" height="3187" alt="image" src="https://github.com/user-attachments/assets/c8b7cbb7-e401-423e-8209-d957c39e4cf7" />
 
 ### '일반적인 상황'이란?
 가장 기본적인 요구 사항과 그에 대한 구현할 기능 목록으로부터 점진적으로 요구 사항, 기능 목록, 테스트 코드 등을 추가할 계획이다.
@@ -77,7 +77,7 @@
 
 이에 따라 다음과 같은 프로그램-사용자 소통 흐름 다이어그램을 그렸다.
 
-<img width="814" height="146" alt="image" src="https://gist.github.com/user-attachments/assets/459bb93e-470c-4f5f-80be-f444b24ee9b7" />
+<img width="1628" height="292" alt="image" src="https://github.com/user-attachments/assets/ea0808a8-9153-4a25-9732-8620fd5ed756" />
 
 ### ApplicationTest에서 테스트 케이스를 추가할 때의 문제점
 먼저 아래의 코드를 보자.
@@ -126,7 +126,7 @@ class ApplicationTest extends NsTest {
 ### 구분자가 아닌 문자가 존재하는 경우 예외 처리
 항상 그렇듯, 먼저 테스트 코드를 작성했는데 의도대로 red로 테스트가 실패하지 않았다.
 
-<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/98e81a2f-7204-4d93-96cd-3d699693ec6c" />
+<img width="2216" height="1574" alt="image" src="https://github.com/user-attachments/assets/f77036aa-838d-4d09-85f9-a40845bf86a0" />
 
 이유는 다음과 같다.
 - 구분자가 아닌 문자열이 존재하는 경우 split의 각 요소가 숫자형 문자열이 아닌 경우가 생긴다.
@@ -138,7 +138,7 @@ class ApplicationTest extends NsTest {
 
 다음과 같이 `isExactlyInstanceOf()`를 사용해서 의도대로 실패하게 할 수 있다.
 
-<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/9249895a-db13-4f13-8465-e99cff6461e1" />
+<img width="2216" height="1574" alt="image" src="https://github.com/user-attachments/assets/17f01175-e184-44ca-83ae-3a251433b204" />
 
 ### 허용된 구분자를 잘못 사용하는 경우
 #### 1) 구분자가 연속 2회 이상 반복되는 경우
@@ -189,7 +189,7 @@ if (Pattern.compile(repeatedDelimiterRegex).matcher(userInput).find()) {
   - 관련해서 찾아보니 `assertThatThrownBy()`에서 `.hasMessageXxx()`를 체이닝해서 사용할 수 있다.
   - 이를 통해 `IllegalArgumentException` 예외가 발생했더라도, 메시지가 다르면 검증에 실패한다. (아래 사진 참고)
 
-<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/d7fc838c-ae3d-45b4-8659-e3ef4adf23f3" />
+<img width="2216" height="1574" alt="image" src="https://github.com/user-attachments/assets/476d28a0-a3f0-44d2-b117-a58d6e571021" />
 
 #### 2) 구분자가 사용자 입력의 가장 앞에 위치하는 경우, 예외의 위계
 앞서 구현한 상황에서 '구분자의 연속 2회 이상 반복'은 입력된 문자열의 어느 위치에서나 동일하게 문제가 된다. 즉, 문자열에서 정규표현식 패턴을 찾아주는 `Pattern`, `Matcher`를 사용하는 것이 적절하다.
@@ -213,7 +213,7 @@ assertThatThrownBy(() -> {
 
 그런데 이는 `",1,2,3"` 입력에 대해서는 테스트가 통과하지만, `",:1,2:3"` 입력에 대해서는 실패한다(아래 사진 참고).
 
-<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/1df8dbfd-673c-4f06-b60d-da1141139aa6" />
+<img width="2216" height="1574" alt="image" src="https://github.com/user-attachments/assets/05586760-7c68-46ac-99de-b4256a037023" />
 
 예외 메시지를 보면 `IllegalArgumentException`이 발생하긴 했지만, 메시지가 달라서 테스트에 실패함을 알 수 있다. 
 
@@ -229,7 +229,7 @@ assertThatThrownBy(() -> {
 
 결론적으로, 더 넓은 범위를 커버하는 맨앞 예외 처리 로직을 반복 예외 처리 로직보다 앞으로 가져오는 것으로 문제를 해결할 수 있다(아래 사진 참고).
 
-<img width="1108" height="787" alt="image" src="https://gist.github.com/user-attachments/assets/5c141c36-9188-4954-9d8f-9c225054430f" />
+<img width="2216" height="1574" alt="image" src="https://github.com/user-attachments/assets/860f1c65-aab3-4c54-a020-1f7c74598e8f" />
 
 #### 3) 구분자가 사용자 입력의 가장 뒤에 위치하는 경우
 이전 상황과 유사하게 해결했다. `userInput.charAt()`의 인덱스를 `0`에서 `userInput.length() - 1`로 바꿔주기만 하면 된다.
@@ -368,7 +368,7 @@ private static boolean hasOnlyAllowedCharacters(String userInput) {
      - 그리고 `StringCalculator`만 해당 클래스를 알게 하면 유저에 공개되는 메서드 문제와, 테스트 메서드 문제가 모두 해결된다.
   2. `calculate` 메서드의 파라미터를 `String`으로 변경하고, 합 계산에 필요한 `long[]` 값은 내부에서 `separate`를 호출해 얻도록 하자.
 
-![separate-메서드와-StringCalculator-객체](https://gist.github.com/user-attachments/assets/b6d9fc6f-fa2d-4a9f-9cfd-461c1d8de956)
+<img width="2159" height="2923" alt="image" src="https://github.com/user-attachments/assets/163afd53-f017-4383-ae8f-d01e5e62dfbb" />
 
 ### '양수'라는 범위에 대한 고민
 아래 사진에 대해 요약하면 다음과 같다.
@@ -376,7 +376,7 @@ private static boolean hasOnlyAllowedCharacters(String userInput) {
 - 따라서 개별 숫자와 그 합이 `int` 범위 내라는 보장이 되지 않는다. 기존에는 `int`로 가정하고 구현했다.
 - 하지만 현재 시점에서, "애매하다면 최대한 넓게 포용할 수 있도록 한다"는 판단 기준을 적용하여 `int` 타입을 `long`으로 변경한다.
 
-![양수라는-범위에-대한-고민이-담긴-필기](https://gist.github.com/user-attachments/assets/55d972de-7328-4ab1-9c28-6c847cd9b92e)
+<img width="2271" height="835" alt="image" src="https://github.com/user-attachments/assets/07dbaa18-a8e0-4334-ab2d-2425ccdf1cfd" />
 
 ### 실수를 입력받을 수 있도록 해야 할까?
 '양수'에는 당연히 '양의 실수'가 포함된다. 이에 대해 실수를 포함시킬 것인지는 다음 두 가지 관점에서 바라볼 수 있다.
