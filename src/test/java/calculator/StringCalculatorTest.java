@@ -34,4 +34,17 @@ public class StringCalculatorTest {
         // then
         assertThat(result).isEqualTo(0);
     }
+
+    @Test
+    @DisplayName("커스텀 구분자가 있는 입력의 합을 리턴할 수 있다")
+    void calculate_user_input_with_custom_delimiters() {
+        // given
+        String userInput = "//;\\n1,2:3;4";
+
+        // when
+        int result = StringCalculator.calculate(userInput);
+
+        // then
+        assertThat(result).isEqualTo(10);
+    }
 }
