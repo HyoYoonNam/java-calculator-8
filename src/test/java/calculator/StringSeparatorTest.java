@@ -16,12 +16,12 @@ public class StringSeparatorTest {
         String userInput2 = "1,2,3,4,5";
 
         // when
-        int[] separated = StringSeparator.separate(userInput);
-        int[] separated2 = StringSeparator.separate(userInput2);
+        long[] separated = StringSeparator.separate(userInput);
+        long[] separated2 = StringSeparator.separate(userInput2);
 
         // then
-        assertThat(separated).isEqualTo(new int[]{1, 2, 3});
-        assertThat(separated2).isEqualTo(new int[]{1, 2, 3, 4, 5});
+        assertThat(separated).isEqualTo(new long[]{1, 2, 3});
+        assertThat(separated2).isEqualTo(new long[]{1, 2, 3, 4, 5});
     }
 
     @Test
@@ -32,12 +32,12 @@ public class StringSeparatorTest {
         String userInput2 = "1:2:3:4:5";
 
         // when
-        int[] separated = StringSeparator.separate(userInput);
-        int[] separated2 = StringSeparator.separate(userInput2);
+        long[] separated = StringSeparator.separate(userInput);
+        long[] separated2 = StringSeparator.separate(userInput2);
 
         // then
-        assertThat(separated).isEqualTo(new int[]{1, 2, 3});
-        assertThat(separated2).isEqualTo(new int[]{1, 2, 3, 4, 5});
+        assertThat(separated).isEqualTo(new long[]{1, 2, 3});
+        assertThat(separated2).isEqualTo(new long[]{1, 2, 3, 4, 5});
     }
 
     @Test
@@ -48,12 +48,12 @@ public class StringSeparatorTest {
         String userInput2 = "1:2,3,4:5";
 
         // when
-        int[] separated = StringSeparator.separate(userInput);
-        int[] separated2 = StringSeparator.separate(userInput2);
+        long[] separated = StringSeparator.separate(userInput);
+        long[] separated2 = StringSeparator.separate(userInput2);
 
         // then
-        assertThat(separated).isEqualTo(new int[]{1, 2, 3});
-        assertThat(separated2).isEqualTo(new int[]{1, 2, 3, 4, 5});
+        assertThat(separated).isEqualTo(new long[]{1, 2, 3});
+        assertThat(separated2).isEqualTo(new long[]{1, 2, 3, 4, 5});
     }
 
     @Test
@@ -115,10 +115,10 @@ public class StringSeparatorTest {
         String userInput = " 1, 2 ,3 , 4,   5 ";
 
         // when
-        int[] separated = StringSeparator.separate(userInput);
+        long[] separated = StringSeparator.separate(userInput);
 
         // then
-        assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4, 5});
+        assertThat(separated).isEqualTo(new long[]{1, 2, 3, 4, 5});
     }
 
     @Test
@@ -141,10 +141,10 @@ public class StringSeparatorTest {
         String userInput = "//;\\n1; 2, 3: 4";
 
         // when
-        int[] separated = StringSeparator.separate(userInput);
+        long[] separated = StringSeparator.separate(userInput);
 
         // then
-        assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4});
+        assertThat(separated).isEqualTo(new long[]{1, 2, 3, 4});
     }
 
     @Test
@@ -194,10 +194,10 @@ public class StringSeparatorTest {
         String userInput = "//:\\n1: 2, 3: 4";
 
         // when
-        int[] separated = StringSeparator.separate(userInput);
+        long[] separated = StringSeparator.separate(userInput);
 
         // then
-        assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4});
+        assertThat(separated).isEqualTo(new long[]{1, 2, 3, 4});
     }
 
     @Test
@@ -208,11 +208,11 @@ public class StringSeparatorTest {
         String userInput2 = "//;\\n"; // 커스텀 문자열 정의만 하고, 실제 데이터 부분은 입력하지 않은 경우
 
         // when
-        int[] separated = StringSeparator.separate(userInput);
-        int[] separated2 = StringSeparator.separate(userInput2);
+        long[] separated = StringSeparator.separate(userInput);
+        long[] separated2 = StringSeparator.separate(userInput2);
 
         // then
-        assertThat(separated).isEqualTo(new int[]{});
-        assertThat(separated2).isEqualTo(new int[]{});
+        assertThat(separated).isEqualTo(new long[]{});
+        assertThat(separated2).isEqualTo(new long[]{});
     }
 }
