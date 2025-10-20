@@ -119,7 +119,7 @@ public class StringSeparator {
              * [^0-9,:\\s] 정규표현식은 '[^'와 ']' 사이에 있는 문자들을 제외한 모든 패턴에 매칭된다.
              * whitespace(\\s)는 일단 존재 자체를 허용하고, 올바른 위치에 대한 검증은 validateWhitespacePosition 메서드에서 한다.
              */
-            String disallowedCharactersRegex = "[^" + DECIMAL_REGEX_PATTERN + delimiterRegexPattern + "\\s]";
+            String disallowedCharactersRegex = "[^" + DECIMAL_REGEX_PATTERN + "[.]" + delimiterRegexPattern + "\\s]";
             if (Pattern.compile(disallowedCharactersRegex).matcher(userInput).find()) {
                 throw new IllegalArgumentException("허용되지 않은 구분자가 존재합니다.");
             }
