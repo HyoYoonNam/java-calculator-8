@@ -34,8 +34,8 @@
   - [x] 커스텀 구분자로 기본 구분자(,와 :)를 명시한 경우, 사용자의 실수라고 판단하여 보정하고 정상 진행한다.
 - [ ] 입력이 빈 문자열이라면, 애플리케이션은 `0`을 출력한다.
   - 개발자 입장에서는 다음 두가지로 구분할 수 있다.
-  - [x] `separate` 메서드는 빈 문자열에 대해 빈 `int` 배열을 리턴한다.
-  - [x] `calculate` 메서드는 빈 ~~`int` 배열~~문자열에 대해 `0`을 리턴한다.
+  - [x] `separate` 메서드는 빈 문자열에 대해 빈 `long` 배열을 리턴한다.
+  - [x] `calculate` 메서드는 빈 ~~`long` 배열~~문자열에 대해 `0`을 리턴한다.
 - [x] 기본 구분자만 있는 입력의 합을 리턴할 수 있다.
   - 예를 들어, `"1,2,3"`에 대해서 `6`을 리턴한다.
 - [x] 빈 문자열(`""`) 입력에 대해서 `0`을 리턴한다.
@@ -131,8 +131,8 @@ class ApplicationTest extends NsTest {
 이유는 다음과 같다.
 - 구분자가 아닌 문자열이 존재하는 경우 split의 각 요소가 숫자형 문자열이 아닌 경우가 생긴다.
   - 예. `"1,2.3:4,5"`의 경우 `String` 배열 `["1", "2.3", "4", "5"]`로 분리된다.
-- 스트림 연산에서 `String` -> `int`로 변환하는 과정에서 실패하게 되면 `NumberFormatException` 예외가 발생한다.
-  - `Integer.parseInt("1")`은 성공하지만, `Integer.parseInt("2.3")`은 실패한다.
+- 스트림 연산에서 `String` -> `long`로 변환하는 과정에서 실패하게 되면 `NumberFormatException` 예외가 발생한다.
+  - `Long.parseLong("1")`은 성공하지만, `Long.parseLong("2.3")`은 실패한다.
 - `NumberFormatException`은 `IllegalArgumentException`의 자식이다.
   - 따라서 `isInstanceOf(부모예외)`에 의해 `true`가 된다.
 
@@ -247,14 +247,14 @@ assertThatThrownBy(() -> {
 
 그래서 내가 선택한 것은 '사용자의 입력에 공백이 포함된 경우 프로그램 내부에서 이를 의도된 공백이라고 판단하고, 처리하자'는 것이다.
 
-'처리한다'고 표현한 이유는, 숫자형 문자열을 `Integer.parseInt()` 메서드를 사용해 숫자로 바꾸는 경우에 공백이 포함되면 예외가 발생하기 때문이다(아래 코드 블록 참고).
+'처리한다'고 표현한 이유는, 숫자형 문자열을 `Long.parseLong()` 메서드를 사용해 숫자로 바꾸는 경우에 공백이 포함되면 예외가 발생하기 때문이다(아래 코드 블록 참고).
 따라서 `strip()`으로 공백을 없애줘야 정상적으로 변환할 수 있다.
 
 **예시 코드 블록**
 
 ```java
 System.out.println("=== 공백이 포함된 숫자형 문자열을 숫자로 변환 시도 ===");
-Integer.parseInt(" 1");
+Long.parseLong(" 1");
 ```
 
 **실행 결과**
@@ -264,8 +264,8 @@ Integer.parseInt(" 1");
 For input string: " 1"
 java.lang.NumberFormatException: For input string: " 1"
 	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:67)
-	at java.base/java.lang.Integer.parseInt(Integer.java:648)
-	at java.base/java.lang.Integer.parseInt(Integer.java:778)
+	at java.base/java.lang.Long.parseLong(Long.java:648)
+	at java.base/java.lang.Long.parseLong(Long.java:778)
 	...
 ```
 
@@ -356,16 +356,24 @@ private static boolean hasOnlyAllowedCharacters(String userInput) {
 아래 사진에 대해 요약하면 다음과 같다.
 - `Application`은 유저 접점이다.
   - 프로그램이 유저에게 제공할 기능은 계산(`calculate`) 기능이다.
-  - 그렇다면 유저는 "내가 입력한 문자열을 검증하고, int 배열로 분리하고, 배열의 각 요소를 더해서 그 합을 출력해 줘"라고 요청해야 될까?
+  - 그렇다면 유저는 "내가 입력한 문자열을 검증하고, `long` 배열로 분리하고, 배열의 각 요소를 더해서 그 합을 출력해 줘"라고 요청해야 될까?
   - 그렇지 않다. "내가 입력한 문자열의 합을 계산해 줘"라고 선언적으로만 요청하는 것이 더 적절해 보인다. 세부 구현은 개발자의 몫이다.
   - 즉, 유저는 `StringCalculator`의 `calculate` 메서드만 알면 된다(`public`).
 - 여기서 크게 두 가지 문제가 생긴다.
   1. 현재, 유저가 알 필요가 없는 `separate` 메서드까지 외부에 노출되어 있다(`public`).
      - 그런데 이를 `private`로 변경하면, 작성했던 테스트 메서드들의 실행이 어려워진다.
-  2. 유저는 `calculate`에게 문자열(`String`)을 전달해야 되는데, 현재 파라미터는 `int[]`이다.
+  2. 유저는 `calculate`에게 문자열(`String`)을 전달해야 되는데, 현재 파라미터는 `long[]`이다.
 - 위 문제에 대해 다음과 같이 해결할 수 있겠다.
   1. (임시 명칭) `StringSeparator` 클래스를 별도로 만들어서 여기에 `separate` 메서드를 둔다.
      - 그리고 `StringCalculator`만 해당 클래스를 알게 하면 유저에 공개되는 메서드 문제와, 테스트 메서드 문제가 모두 해결된다.
-  2. `calculate` 메서드의 파라미터를 `String`으로 변경하고, 합 계산에 필요한 `int[]` 값은 내부에서 `separate`를 호출해 얻도록 하자.
+  2. `calculate` 메서드의 파라미터를 `String`으로 변경하고, 합 계산에 필요한 `long[]` 값은 내부에서 `separate`를 호출해 얻도록 하자.
 
 ![separate-메서드와-StringCalculator-객체](https://gist.github.com/user-attachments/assets/b6d9fc6f-fa2d-4a9f-9cfd-461c1d8de956)
+
+### '양수'라는 범위에 대한 고민
+아래 사진에 대해 요약하면 다음과 같다.
+- 문제 요구 사항에서 '양수'라는 것 외에 숫자 범위에 대한 힌트는 없다.
+- 따라서 개별 숫자와 그 합이 `int` 범위 내라는 보장이 되지 않는다. 기존에는 `int`로 가정하고 구현했다.
+- 하지만 현재 시점에서, "애매하다면 최대한 넓게 포용할 수 있도록 한다"는 판단 기준을 적용하여 `int` 타입을 `long`으로 변경한다.
+
+![양수라는-범위에-대한-고민이-담긴-필기](https://gist.github.com/user-attachments/assets/55d972de-7328-4ab1-9c28-6c847cd9b92e)
