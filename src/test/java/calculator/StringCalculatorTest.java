@@ -47,4 +47,18 @@ public class StringCalculatorTest {
         // then
         assertThat(result).isEqualTo(10);
     }
+
+    @Test
+    @DisplayName("사용자의 잘못된 입력에 대한 예외가 Separator에서 Calculator로 바르게 전달된다")
+    // 예외가 전파되는 것만 확인하면 되므로 Separator에서 테스트한 모든 예외 상황에 대해서 중복적으로 할 필요는 없음
+    void 예외_전파_테스트() {
+        // given
+        String userInput = "//1\\n11 2, 3";
+
+        // when and then
+        assertThatThrownBy(() -> {
+            StringSeparator.separate(userInput);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("커스텀 구분자에는 숫자를 지정할 수 없습니다.");
+    }
 }
