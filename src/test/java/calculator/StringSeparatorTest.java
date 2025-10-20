@@ -60,7 +60,7 @@ public class StringSeparatorTest {
     @DisplayName("구분자가 아닌 문자열이 존재하면 예외를 발생시킨다")
     void when_user_input_contains_non_delimiter_then_throw_IllegalArgEx() {
         // given
-        String userInput = "1,2.3:4;5";
+        String userInput = "1,2-3:4;5";
         String userInput2 = "1,2a3,4a5";
 
         // when and then
@@ -214,5 +214,18 @@ public class StringSeparatorTest {
         // then
         assertThat(separated).isEqualTo(new long[]{});
         assertThat(separated2).isEqualTo(new long[]{});
+    }
+
+    @Test
+    @DisplayName("커스텀 구분자에 점(.)을 지정하면 예외를 발생시킨다")
+    void when_custom_delimiter_is_dot_then_throw_IllegalArgEx() {
+        // given
+        String userInput = "//.\\n1,2.3,4";
+
+        // when and then
+        assertThatThrownBy(() -> {
+            StringSeparator.separate(userInput);
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("커스텀 구분자에는 점\\(.\\)을 지정할 수 없습니다.");
     }
 }

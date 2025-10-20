@@ -66,6 +66,14 @@ public class StringSeparator {
             if (isWhitespace(delimiter.charAt(0))) {
                 throw new IllegalArgumentException("커스텀 구분자에는 공백을 지정할 수 없습니다.");
             }
+
+            if (isDot(delimiter)) {
+                throw new IllegalArgumentException("커스텀 구분자에는 점(.)을 지정할 수 없습니다.");
+            }
+        }
+
+        private static boolean isDot(String delimiter) {
+            return delimiter.charAt(0) == '.';
         }
 
         // 테스트 메서드에서의 단어(number)와 맞추기 위해 Character.isDigit()을 래핑
