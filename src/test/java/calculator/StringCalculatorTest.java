@@ -227,4 +227,17 @@ public class StringCalculatorTest {
         // then
         assertThat(result).isEqualTo(6);
     }
+
+    @Test
+    @DisplayName("빈 문자열이 입력되는 경우 0을 리턴한다")
+    void when_user_input_is_zero_then_return_zero() {
+        // given
+        String userInput = "";
+
+        // when
+        int result = StringCalculator.calculate(userInput);
+
+        // then
+        assertThat(result).isEqualTo(0);
+    }
 }
