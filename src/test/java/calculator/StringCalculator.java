@@ -25,6 +25,12 @@ public class StringCalculator {
     public static int[] separate(String userInput) {
         userInput = processCustomDelimiterDefinition(userInput);
 
+        // 사용자가 커스텀 문자열 정의만 하고, 실제 데이터 부분은 입력하지 않는 상황은 정상 입력으로 판단한다.
+        // 따라서 빈 문자열 검증은 커스텀 문자열 정의부를 제거한 후인 해당 시점에 진행
+        if (userInput.isEmpty()) {
+            return new int[]{};
+        }
+
         validateUserInput(userInput);
 
         String splitRegex = "[" + String.join("", DELIMITERS) + "]";

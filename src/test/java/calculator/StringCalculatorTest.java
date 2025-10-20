@@ -198,4 +198,20 @@ public class StringCalculatorTest {
         // then
         assertThat(separated).isEqualTo(new int[]{1, 2, 3, 4});
     }
+
+    @Test
+    @DisplayName("빈 문자열이 입력되면, 빈 int 배열을 리턴한다")
+    void when_user_input_is_empty_string_then_return_empty_int_array() {
+        // given
+        String userInput = "";
+        String userInput2 = "//;\\n"; // 커스텀 문자열 정의만 하고, 실제 데이터 부분은 입력하지 않은 경우
+
+        // when
+        int[] separated = StringCalculator.separate(userInput);
+        int[] separated2 = StringCalculator.separate(userInput2);
+
+        // then
+        assertThat(separated).isEqualTo(new int[]{});
+        assertThat(separated2).isEqualTo(new int[]{});
+    }
 }
