@@ -66,11 +66,13 @@ public class StringSeparatorTest {
         // when and then
         assertThatThrownBy(() -> {
             StringSeparator.separate(userInput);
-        }).isExactlyInstanceOf(IllegalArgumentException.class);
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("허용되지 않은 구분자가 존재합니다.");
 
         assertThatThrownBy(() -> {
             StringSeparator.separate(userInput2);
-        }).isExactlyInstanceOf(IllegalArgumentException.class);
+        }).isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching("허용되지 않은 구분자가 존재합니다.");
     }
 
     @Test
