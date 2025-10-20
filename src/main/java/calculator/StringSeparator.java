@@ -15,13 +15,13 @@ public class StringSeparator {
     private static final List<String> DELIMITERS = new ArrayList<>(BASIC_DELIMITERS);
     private static final String DECIMAL_REGEX_PATTERN = "0-9";
 
-    public static long[] separate(String userInput) {
+    public static double[] separate(String userInput) {
         userInput = CustomDelimiterProcessor.process(userInput);
 
         // 사용자가 커스텀 문자열 정의만 하고, 실제 데이터 부분은 입력하지 않는 상황은 정상 입력으로 판단한다.
         // 따라서 빈 문자열 검증은 커스텀 문자열 정의부를 제거한 후인 해당 시점에 진행
         if (userInput.isEmpty()) {
-            return new long[]{};
+            return new double[]{};
         }
 
         InputValidator.validateUserInput(userInput);
@@ -30,7 +30,7 @@ public class StringSeparator {
         String[] split = userInput.split(splitRegex);
         return Stream.of(split)
                 .map(String::strip)
-                .mapToLong(Long::parseLong)
+                .mapToDouble(Double::parseDouble)
                 .toArray();
     }
 

@@ -399,5 +399,5 @@ private static boolean hasOnlyAllowedCharacters(String userInput) {
 이를 위해 다음과 같은 과정을 거친다.
 - [x] 기존 테스트 케이스에서 커스텀 구분자로 `.`을 사용한 경우, 다른 커스텀 구분자(`-`로 통일)로 변경한다. - `separator`
 - [x] 커스텀 구분자로 `.`을 지정하는 경우 예외를 발생시키는 테스트 메서드를 추가하고, 프로그램 로직을 구현한다. - `separator`
-- [ ] 양의 실수가 입력에 포함된 경우에 대한 테스트 메서드를 추가한다. - `separator`, `calculator`
-- [ ] 3번 테스트를 통과시키기 위해 관련된 `long[]` 타입을 모두 `double[]`로 변경한다.
+- [x] 양의 실수가 입력에 포함된 경우에 대한 테스트 메서드를 추가한다. - `separator`, `calculator`
+- [x] 3번 테스트를 통과시키기 위해 관련된 `long[]` 타입을 모두 `double[]`로 변경한다.

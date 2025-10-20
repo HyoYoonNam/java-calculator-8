@@ -15,7 +15,7 @@ public class StringCalculatorTest {
         String userInput = "1,2:3";
 
         // when
-        long result = StringCalculator.calculate(userInput);
+        double result = StringCalculator.calculate(userInput);
 
         // then
         assertThat(result).isEqualTo(6);
@@ -28,7 +28,7 @@ public class StringCalculatorTest {
         String userInput = "";
 
         // when
-        long result = StringCalculator.calculate(userInput);
+        double result = StringCalculator.calculate(userInput);
 
         // then
         assertThat(result).isEqualTo(0);
@@ -41,7 +41,7 @@ public class StringCalculatorTest {
         String userInput = "//;\\n1,2:3;4";
 
         // when
-        long result = StringCalculator.calculate(userInput);
+        double result = StringCalculator.calculate(userInput);
 
         // then
         assertThat(result).isEqualTo(10);

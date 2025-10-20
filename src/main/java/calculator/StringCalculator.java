@@ -2,11 +2,11 @@ package calculator;
 
 public class StringCalculator {
 
-    public static long calculate(String userInput) {
-        long[] separated = StringSeparator.separate(userInput);
+    public static double calculate(String userInput) {
+        double[] separated = StringSeparator.separate(userInput);
 
-        long sum = 0;
-        for (long number : separated) {
+        double sum = 0;
+        for (double number : separated) {
             sum += number;
         }
         return sum;
