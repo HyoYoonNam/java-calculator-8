@@ -16,7 +16,7 @@ public class StringSeparator {
     private static final String DECIMAL_REGEX_PATTERN = "0-9";
 
     public static int[] separate(String userInput) {
-        userInput = processCustomDelimiterDefinition(userInput);
+        userInput = CustomDelimiterProcessor.process(userInput);
 
         // 사용자가 커스텀 문자열 정의만 하고, 실제 데이터 부분은 입력하지 않는 상황은 정상 입력으로 판단한다.
         // 따라서 빈 문자열 검증은 커스텀 문자열 정의부를 제거한 후인 해당 시점에 진행
@@ -34,21 +34,23 @@ public class StringSeparator {
                 .toArray();
     }
 
-    private static String processCustomDelimiterDefinition(String userInput) {
-        String customDelimiterDefinitionRegex = "^//(.*)\\\\n";
-        Matcher matcher = Pattern.compile(customDelimiterDefinitionRegex).matcher(userInput);
-        if (!matcher.find()) {
-            return userInput;
+    private static class CustomDelimiterProcessor {
+        private static String process(String userInput) {
+            String customDelimiterDefinitionRegex = "^//(.*)\\\\n";
+            Matcher matcher = Pattern.compile(customDelimiterDefinitionRegex).matcher(userInput);
+            if (!matcher.find()) {
+                return userInput;
+            }
+
+            String delimiter = matcher.group(1);
+
+            Validator.validateCustomDelimiter(delimiter);
+
+            if (!DELIMITERS.contains(delimiter)) {
+                DELIMITERS.add(delimiter); // 커스텀 구분자를 구분자 리스트에 추가
+            }
+            return userInput.replace(matcher.group(0), "");
         }
-
-        String delimiter = matcher.group(1);
-
-        Validator.validateCustomDelimiter(delimiter);
-
-        if (!DELIMITERS.contains(delimiter)) {
-            DELIMITERS.add(delimiter); // 커스텀 구분자를 구분자 리스트에 추가
-        }
-        return userInput.replace(matcher.group(0), "");
     }
 
     private static class Validator {
