@@ -214,4 +214,17 @@ public class StringCalculatorTest {
         assertThat(separated).isEqualTo(new int[]{});
         assertThat(separated2).isEqualTo(new int[]{});
     }
+
+    @Test
+    @DisplayName("기본 구분자만 있는 입력의 합을 리턴할 수 있다")
+    void calculate_user_input_with_basic_delimiters() {
+        // given
+        String userInput = "1,2:3";
+
+        // when
+        int result = StringCalculator.calculate(userInput);
+
+        // then
+        assertThat(result).isEqualTo(6);
+    }
 }
